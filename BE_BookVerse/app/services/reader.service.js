@@ -1,0 +1,90 @@
+const { ObjectId } = require("mongodb");
+
+class ReaderService {
+  constructor(client) {
+    this.Reader = client.db().collection("DocGia");
+  }
+
+  extractReaderData(payload) {
+    const reader = {
+      Username: payload.Username,
+      Password: payload.Password,
+      HoTen: payload.HoTen,
+      DiaChi: payload.DiaChi,
+      SoDienThoai: payload.SoDienThoai,
+      Email: payload.Email,
+      TrangThaiThe: payload.TrangThaiThe || "active",
+    };
+    Object.keys(reader).forEach((key) => reader[key] === undefined && delete reader[key]);
+    return reader;
+  }
+
+  async create(payload) {
+    const reader = this.extractReaderData(payload);
+    const result = await this.Reader.insertOne(reader);
+    return await this.findById(result.insertedId);
+  }
+
+  async find(filter) {
+    const cursor = await this.Reader.find(filter);
+    return await cursor.toArray();
+  }
+
+  async findUsername(username) {
+    return await this.Reader.findOne({
+      Username: { $regex: new RegExp(`^${username}$`), $options: "i" },
+    });
+  }
+
+  async findById(id) {
+    return await this.Reader.findOne({
+      _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+    });
+  }
+
+  async update(id, payload) {
+    const filter = {
+      _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+    };
+    const update = this.extractReaderData(payload);
+    const result = await this.Reader.findOneAndUpdate(filter, { $set: update }, { returnDocument: "after" });
+    return result;
+  }
+
+  async delete(id) {
+    const result = await this.Reader.findOneAndDelete({
+      _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+    });
+    return result;
+  }
+
+  async deleteAll() {
+    const result = await this.Reader.deleteMany({});
+    return result;
+  }
+
+  async updateStatus(MaDocGia, status) {
+    return await this.Reader.updateOne({ MaDocGia: MaDocGia }, { $set: { TrangThaiThe: status } });
+  }
+
+  async lock(id) {
+    const result = await this.Reader.updateOne({ _id: new ObjectId(id) }, { $set: { TrangThaiThe: "locked" } });
+
+    console.log("Lock result:", result);
+    return result;
+  }
+
+  async unlock(MaDocGia) {
+    return await this.Reader.updateOne(
+      {
+        MaDocGia: MaDocGia,
+        TrangThaiThe: "lock",
+      },
+      {
+        $set: { TrangThaiThe: "active" },
+      },
+    );
+  }
+}
+
+module.exports = ReaderService;

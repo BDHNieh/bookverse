@@ -1,0 +1,114 @@
+/* ===== LIST ===== */
+.reader-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reader-item {
+  padding: 16px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.reader-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.reader-item.active {
+  border: 2px solid #4f46e5;
+}
+
+.reader-item .name {
+  font-weight: bold;
+  margin: 0;
+}
+
+.reader-item .username {
+  font-size: 13px;
+  color: #777;
+}
+
+.reader-item .info {
+  margin: 4px 0;
+}
+
+.reader-item .phone {
+  font-size: 13px;
+  color: #555;
+}
+
+.empty {
+  text-align: center;
+  color: #999;
+}
+
+/* ===== DETAILS ===== */
+.reader-details {
+  padding: 20px;
+}
+
+.reader-details .title {
+  margin-bottom: 20px;
+}
+
+.reader-details .card {
+  padding: 20px;
+  border: 1px dashed #ddd;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.reader-details .box {
+  background: #f7f7f7;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.reader-details .actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.reader-details .delete {
+  background: #7c3aed;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+/* ===== LAYOUT ===== */
+.reader-wrapper {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.reader-card {
+  display: flex;
+  gap: 20px;
+}
+
+.reader-card .left {
+  width: 40%;
+}
+
+.reader-card .right {
+  width: 60%;
+}
+
+.reader-card .header {
+  margin-bottom: 10px;
+}
+
+.empty-state {
+  text-align: center;
+  color: #999;
+}
