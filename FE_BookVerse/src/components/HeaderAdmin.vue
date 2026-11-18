@@ -89,11 +89,11 @@
             <div v-if="showMenu" class="user-dropdown">
               <button class="dropdown-item" @click="goProfile">
                 <font-awesome-icon icon="user" />
-                Profile
+                Thông Tin
               </button>
               <button class="dropdown-item" @click="logout">
                 <font-awesome-icon icon="right-from-bracket" />
-                Logout
+                Đăng Xuất
               </button>
             </div>
           </transition>

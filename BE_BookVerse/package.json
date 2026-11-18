@@ -2,20 +2,21 @@
   "name": "be_bookverse",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://github.com/BDHNieh/bookverse.git",
+  "homepage": "https://github.com/NamIvsb02/BE_BookVerse#readme",
   "bugs": {
-    "url": "https://github.com/BDHNieh/bookverse.git"
+    "url": "https://github.com/NamIvsb02/BE_BookVerse/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BDHNieh/bookverse.git"
+    "url": "git+https://github.com/NamIvsb02/BE_BookVerse.git"
   },
   "license": "ISC",
-  "author": "Bui Dong Hien",
+  "author": "Vo Thanh Nam",
   "type": "commonjs",
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
+    "test": "node tests/reader.maintenance.test.js",
     "format": "prettier --write ."
   },
   "dependencies": {

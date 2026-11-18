@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import BookService from "../services/book.service";
-import erImg from "../assets/image/mimosa.png";
+import erImg from "../assets/image/Stephen King.png";
 import { useRouter } from "vue-router";
 
 const router = useRouter();

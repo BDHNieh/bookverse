@@ -5,11 +5,40 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/index.js");
 
 exports.create = async (req, res, next) => {
-  if (!req.body?.Username || !req.body?.Password) {
-    return next(new ApiError(400, "Username and Password can't be empty"));
+  const { Username, Password, Email, SoDienThoai } = req.body || {};
+
+  // RQ-04: kiểm tra dữ liệu đầu vào (đồng nhất với schema yup ở Frontend)
+  if (!Username || !Password || !Email || !SoDienThoai) {
+    return next(new ApiError(400, "Username, Password, Email and Phone Number can't be empty"));
   }
+  if ([Username, Password, Email, SoDienThoai].some((value) => typeof value !== "string")) {
+    return next(new ApiError(400, "Invalid data format"));
+  }
+  if (Username.length < 6 || Username.length > 20) {
+    return next(new ApiError(400, "Username must be 6-20 characters"));
+  }
+  if (Password.length < 8) {
+    return next(new ApiError(400, "Password must be at least 8 characters"));
+  }
+  if (!/^\S+@\S+\.\S+$/.test(Email)) {
+    return next(new ApiError(400, "Invalid email format"));
+  }
+  if (!/^\d{10,11}$/.test(SoDienThoai)) {
+    return next(new ApiError(400, "Phone number must be 10-11 digits"));
+  }
+
   try {
     const readerService = new ReaderService(MongoDB.client);
+
+    const existedUsername = await readerService.findUsername(Username);
+    if (existedUsername) {
+      return next(new ApiError(400, "Username already exists"));
+    }
+    const existedEmail = await readerService.findEmail(Email);
+    if (existedEmail) {
+      return next(new ApiError(400, "Email already exists"));
+    }
+
     const document = await readerService.create(req.body);
     return res.send(document);
   } catch (error) {
@@ -47,7 +76,13 @@ exports.findUsername = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  const { Username, Password } = req.body;
+  const { Username, Password } = req.body || {};
+
+  // RQ-05: chặn dữ liệu rỗng trước khi truy vấn CSDL
+  if (!Username || !Password) {
+    return next(new ApiError(400, "Username and Password can't be empty"));
+  }
+
   try {
     const readerService = new ReaderService(MongoDB.client);
     const reader = await readerService.findUsername(Username);
@@ -64,6 +99,7 @@ exports.login = async (req, res, next) => {
         _id: reader._id,
         Ten: reader.Ten,
         Username: reader.Username,
+        Avatar: reader.Avatar, // RQ-09: trả về ảnh đại diện để Header hiển thị ngay sau khi đăng nhập
         role: "user",
       },
     });
@@ -98,6 +134,44 @@ exports.update = async (req, res, next) => {
     return res.send(document);
   } catch (error) {
     return next(new ApiError(500, `Error updating reader with id=${req.params.id}`));
+  }
+};
+
+// RQ-10: Đổi mật khẩu - PUT /api/reader/:id/password
+exports.changePassword = async (req, res, next) => {
+  const { OldPassword, NewPassword } = req.body || {};
+
+  // Chỉ chủ tài khoản (đúng id trong JWT) mới được đổi mật khẩu của chính mình
+  if (req.user?.role === "staff" || String(req.user?.id) !== String(req.params.id)) {
+    return next(new ApiError(403, "You can only change your own password"));
+  }
+  if (!OldPassword || !NewPassword) {
+    return next(new ApiError(400, "Old password and new password can't be empty"));
+  }
+  if (typeof OldPassword !== "string" || typeof NewPassword !== "string") {
+    return next(new ApiError(400, "Invalid password format"));
+  }
+  if (NewPassword.length < 8) {
+    return next(new ApiError(400, "New password must be at least 8 characters"));
+  }
+  if (NewPassword === OldPassword) {
+    return next(new ApiError(400, "New password must be different from the old password"));
+  }
+
+  try {
+    const readerService = new ReaderService(MongoDB.client);
+    const reader = await readerService.findById(req.params.id);
+    if (!reader) {
+      return next(new ApiError(404, "Reader not found"));
+    }
+    if (reader.Password !== OldPassword) {
+      return next(new ApiError(400, "Old password is incorrect"));
+    }
+
+    await readerService.changePassword(req.params.id, NewPassword);
+    return res.send({ message: "Password was changed successfully" });
+  } catch (error) {
+    return next(new ApiError(500, "An error occurred while changing the password"));
   }
 };
 

@@ -230,3 +230,48 @@
 
   border-radius: 10px;
 }
+
+/* RQ-09: Ảnh đại diện trong form chỉnh sửa */
+.profile-edit__avatar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.profile-edit__avatar-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.profile-edit__avatar-group .profile-edit__btn {
+  width: auto;
+  padding: 10px 20px;
+  margin-top: 10px;
+}
+
+.profile-edit__hint {
+  margin-top: 6px;
+  color: #888;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* RQ-10: Thông báo lỗi và trạng thái nút trong form đổi mật khẩu */
+.profile-edit__error {
+  display: block;
+  margin-top: 6px;
+  color: #dc2626;
+  font-size: 13px;
+}
+
+.profile-edit__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}

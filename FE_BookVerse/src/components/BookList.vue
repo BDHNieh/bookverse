@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import BookService from "../services/book.service";
-import erImg from "../assets/image/mimosa.png";
+import erImg from "../assets/image/Stephen King.png";
 import CategoryService from "../services/category.service";
 import { computed } from "vue";
 

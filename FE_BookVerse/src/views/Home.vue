@@ -168,12 +168,12 @@ export default {
       faqs: [
         {
           q: "Làm thế nào để mượn sách?",
-          a: "Bạn có thể duyệt sách và gửi yêu cầu mượn.",
+          a: "Bạn có thể chọn sách và gửi yêu cầu mượn.",
           open: false,
         },
         {
           q: "Tôi có thể giữ sách bao lâu?",
-          a: "Thông thường là 2 tuần.",
+          a: "Tối đa trong 2 tuần.",
           open: false,
         },
         {
@@ -183,7 +183,7 @@ export default {
         },
         {
           q: "Nếu trả sách trễ thì sao?",
-          a: "Có thể bị phạt một khoản phí nhỏ.",
+          a: "Sẽ bị phạt một khoản phí nhỏ.",
           open: false,
         },
       ],

@@ -1,5 +1,9 @@
 const { ObjectId } = require("mongodb");
 
+// Escape các ký tự đặc biệt của RegExp để so khớp chuỗi theo đúng nghĩa đen
+// (VD: Email chứa "." hoặc "+" không được hiểu là ký tự điều khiển regex)
+const escapeRegex = (text) => String(text).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 class ReaderService {
   constructor(client) {
     this.Reader = client.db().collection("DocGia");
@@ -13,6 +17,7 @@ class ReaderService {
       DiaChi: payload.DiaChi,
       SoDienThoai: payload.SoDienThoai,
       Email: payload.Email,
+      Avatar: payload.Avatar, // RQ-09: tên file ảnh đại diện
       TrangThaiThe: payload.TrangThaiThe || "active",
     };
     Object.keys(reader).forEach((key) => reader[key] === undefined && delete reader[key]);
@@ -32,7 +37,14 @@ class ReaderService {
 
   async findUsername(username) {
     return await this.Reader.findOne({
-      Username: { $regex: new RegExp(`^${username}$`), $options: "i" },
+      Username: { $regex: new RegExp(`^${escapeRegex(username)}$`), $options: "i" },
+    });
+  }
+
+  // RQ-04: kiểm tra Email đã tồn tại hay chưa (không phân biệt hoa/thường)
+  async findEmail(email) {
+    return await this.Reader.findOne({
+      Email: { $regex: new RegExp(`^${escapeRegex(email)}$`), $options: "i" },
     });
   }
 
@@ -49,6 +61,11 @@ class ReaderService {
     const update = this.extractReaderData(payload);
     const result = await this.Reader.findOneAndUpdate(filter, { $set: update }, { returnDocument: "after" });
     return result;
+  }
+
+  // RQ-10: đổi mật khẩu (chỉ cập nhật đúng trường Password)
+  async changePassword(id, newPassword) {
+    return await this.Reader.updateOne({ _id: ObjectId.isValid(id) ? new ObjectId(id) : null }, { $set: { Password: newPassword } });
   }
 
   async delete(id) {

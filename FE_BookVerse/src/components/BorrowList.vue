@@ -112,7 +112,7 @@ const countByStatus = (status) => {
           <tr v-for="item in filteredBorrows" :key="item._id">
             <td>
               <div class="book-cell">
-                <img :src="item.sach_info?.image || '/src/assets/image/soldier.jpg'" class="thumb" />
+                <img :src="item.sach_info?.image || '/src/assets/image/Stephen King.png'" class="thumb" />
                 <div class="borrow-book-detail">
                   <div class="book-name">
                     {{ item.sach_info?.TenSach || "Không xác định" }}

@@ -97,7 +97,7 @@
               <!-- PROFILE -->
               <button v-if="isLogin" class="dropdown-item" @click="goProfile">
                 <font-awesome-icon icon="user" />
-                Profile
+                Thông Tin
               </button>
 
               <!-- LOGIN -->
@@ -109,7 +109,7 @@
               <!-- LOGOUT -->
               <button v-else class="dropdown-item" @click="logout">
                 <font-awesome-icon icon="right-from-bracket" />
-                Logout
+                Đăng Xuất
               </button>
             </div>
           </transition>
@@ -126,6 +126,8 @@
 
 <script>
 import avatarImg from "../assets/image/avt.jpg";
+import { getAvatarUrl } from "../utils/avatar.utils";
+
 export default {
   name: "HeaderUser",
 
@@ -140,16 +142,26 @@ export default {
   },
 
   mounted() {
-    const user = JSON.parse(localStorage.getItem("user"));
+    this.loadUser();
+    // RQ-09: cập nhật ảnh đại diện ngay khi người dùng lưu hồ sơ
+    window.addEventListener("user-updated", this.loadUser);
+  },
 
-    if (user) {
-      this.Username = user.Username || "User";
-      this.avatar = user.avatar || avatarImg;
-      this.isLogin = true;
-    }
+  beforeUnmount() {
+    window.removeEventListener("user-updated", this.loadUser);
   },
 
   methods: {
+    loadUser() {
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (user) {
+        this.Username = user.Username || "User";
+        this.avatar = getAvatarUrl(user.Avatar, avatarImg);
+        this.isLogin = true;
+      }
+    },
+
     handleSearch() {
       console.log("Search:", this.search);
     },

@@ -1,7 +1,7 @@
 <template>
   <HeaderUser />
   <div class="m-auto" style="max-width: 1200px">
-    <ProfileLayout :user="user" @updateUser="updateUser" />
+    <ProfileLayout :user="user" @updateUser="updateUser" @reloadUser="loadUser" />
   </div>
   <FooterComp />
 </template>
@@ -38,7 +38,15 @@ export default {
 
       await ReaderService.update(id, data);
 
-      this.user = await ReaderService.get(id); // 👈 lấy lại data chuẩn từ server
+      this.user = await ReaderService.get(id); // lấy lại dữ liệu chuẩn từ server
+
+      // RQ-09: đồng bộ ảnh đại diện vào localStorage và báo cho Header cập nhật ngay (không cần đăng nhập lại)
+      const userLocal = JSON.parse(localStorage.getItem("user"));
+      if (userLocal) {
+        userLocal.Avatar = this.user.Avatar;
+        localStorage.setItem("user", JSON.stringify(userLocal));
+        window.dispatchEvent(new Event("user-updated"));
+      }
     },
   },
 

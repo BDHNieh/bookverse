@@ -6,7 +6,7 @@ const emit = defineEmits(["submit:login"]);
 
 // Schema validate
 const schema = yup.object({
-  Username: yup.string().min(8, "Tên đăng nhập phải có ít nhất 8 ký tự").required("Tên đăng nhập không được để trống"),
+  Username: yup.string().min(6, "Tên đăng nhập phải có ít nhất 6 ký tự").max(20, "Tên đăng nhập không được vượt quá 20 ký tự").required("Tên đăng nhập không được để trống"),
 
   Password: yup.string().min(8, "Mật khẩu phải có ít nhất 8 ký tự").required("Mật khẩu không được để trống"),
 

@@ -5,13 +5,16 @@ import * as yup from "yup";
 const emit = defineEmits(["submit"]);
 
 const schema = yup.object({
-  Username: yup.string().min(8, "Username must be at least 8 characters").required("Please enter Username"),
+  Username: yup.string().min(6, "Username must be at least 6 characters").max(20, "Username must be at most 20 characters").required("Please enter Username"),
 
-  Password: yup.string().min(6, "Password must be at least 6 characters").required("Please enter password"),
+  Password: yup.string().min(8, "Password must be at least 8 characters").required("Please enter password"),
 
   Email: yup.string().email("Invalid email format").required("Please enter email"),
 
-  SoDienThoai: yup.string().required("Please enter phone number"),
+  SoDienThoai: yup
+    .string()
+    .matches(/^\d{10,11}$/, "Phone number must be 10-11 digits")
+    .required("Please enter phone number"),
 });
 
 const handleSubmit = (values) => {

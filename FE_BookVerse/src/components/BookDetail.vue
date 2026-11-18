@@ -4,7 +4,7 @@ import { useRouter, useRoute } from "vue-router";
 import BookService from "../services/book.service";
 import BorrowService from "../services/borrow.service";
 import BorrowForm from "../components/BorrowForm.vue";
-import erImg from "../assets/image/soldier.jpg";
+import erImg from "../assets/image/Stephen King.png";
 
 const router = useRouter();
 const route = useRoute();

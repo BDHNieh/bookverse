@@ -1,7 +1,7 @@
 <template>
   <HeaderAdmin />
   <div class="m-auto" style="max-width: 1200px">
-    <ProfileLayout :user="user" @updateUser="updateUser" />
+    <ProfileLayout :user="user" :allowAvatar="false" :allowPassword="false" @updateUser="updateUser" />
   </div>
   <FooterComp />
 </template>

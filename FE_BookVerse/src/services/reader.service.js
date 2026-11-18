@@ -28,6 +28,18 @@ class ReaderService {
   async delete(id) {
     return (await this.api.delete(`/${id}`)).data;
   }
+  // RQ-09: tải ảnh đại diện lên máy chủ, trả về { filename }
+  async uploadAvatar(formData) {
+    return (
+      await this.api.post("/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+    ).data;
+  }
+  // RQ-10: đổi mật khẩu, data = { OldPassword, NewPassword }
+  async changePassword(id, data) {
+    return (await this.api.put(`/${id}/password`, data)).data;
+  }
 }
 
 export default new ReaderService("/api/reader");
